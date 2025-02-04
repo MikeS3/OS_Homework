@@ -2,64 +2,71 @@
 package main
 
 import ("fmt"
-	"os/exec"
 )
 
 
 // Stack structure to hold the stack data
 type Stack struct {
-    elements []int
+	elements [100]int
+	top int
 }
 
 // Push adds an element to the stack
-func (s *Stack) Push(element int) {
-    s.elements = append(s.elements, element)
+func (s *Stack) Push(element int) bool {
+   if s.top == 100 {
+	return false
+}
+
+s.elements[s.top] = element
+s.top = s.top + 1 // increase top element by 1
+return true
 }
 
 // Pop removes and returns the top element from the stack
 func (s *Stack) Pop() (int, bool) {
-    if len(s.elements) == 0 {
+    if s.top == 0 {
         return 0, false // Return 0 and false if the stack is empty
     }
-    topElement := s.elements[len(s.elements)-1]
-    s.elements = s.elements[:len(s.elements)-1]
-    return topElement, true
+    s.top = s.top - 1 // decrement top element by 1
+    return s.elements[s.top], true
 }
 
 // Top returns the top element without removing it from the stack
 func (s *Stack) Top() (int, bool) {
-    if len(s.elements) == 0 {
+    if s.top == 0 {
         return 0, false
     }
-    return s.elements[len(s.elements)-1], true
-}
-
-// IsEmpty checks if the stack is empty
-func (s *Stack) IsEmpty() bool {
-    return len(s.elements) == 0
+    return s.elements[s.top -1], true
 }
 
 func main() {
-    // Create a new stack
-    stack := Stack{}
+	// Create a new stack
+	stack := Stack{}
 
-    // Push some elements onto the stack
-    stack.Push(10)
-    stack.Push(20)
-    stack.Push(30)
+	// Push some elements onto the stack
+	stack.Push(1)
+	fmt.Println("Pushed 1")
+	stack.Push(2)
+	fmt.Println("Pushed 2")
+	stack.Push(3)
+	fmt.Println("Pushed 3")
 
-    // Top element (similar to Peek)
-    top, _ := stack.Top()
-    fmt.Println("Top element:", top)
+	// Top element (similar to Peek)
+	top1, _ := stack.Top()
+	fmt.Println("Top element:", top1)
+	popped1, _ := stack.Pop()
+	fmt.Println("Popped: ", popped1)
+	stack.Push(17)
+	fmt.Println("Pushed 17")
+	stack.Push(19)
+	fmt.Println("Pushed 19")
 
-    // Pop elements from the stack
-    for !stack.IsEmpty() {
-        popped, _ := stack.Pop()
-        fmt.Println("Popped element:", popped)
-    }
-
-    // Check if the stack is empty after popping all elements
-    if stack.IsEmpty() {
-        fmt.Println("Stack is empty")
-
-
+	popped2, _ := stack.Pop()
+	fmt.Println("Popped: ", popped2)
+	popped3, _ := stack.Pop()
+	fmt.Println("Popped: ", popped3)
+	popped4, _ := stack.Pop()
+	fmt.Println("Popped: ", popped4)
+	top2, _ := stack.Top()
+	fmt.Println("Top element:", top2)
+}
