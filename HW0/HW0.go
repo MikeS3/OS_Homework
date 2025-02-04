@@ -1,6 +1,6 @@
 
 
-/*
+/* test
 //stack implementation in Go from
 type stack []int
 
