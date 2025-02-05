@@ -40,4 +40,37 @@ Clone the repository using the following commands:
 git clone https://github.com/MikeS3/OS_Homework.git
 cd OS_Homework
 cd HW0
+```
+### Running the Code
+
+To run the code enter this command
+
+```
+go run HW0.go
+```
+### Results 
+Produce successfully gives the 5 numbers and the consumer gets them and prints them
+
+Expected output:
+
+Producer: 1
+
+Consumer: 1
+
+Producer: 2
+
+Consumer: 2
+
+Producer: 3
+
+Consumer: 3
+
+Producer: 4
+
+Consumer: 4
+
+Producer: 5
+
+Consumer: 5
+
 
