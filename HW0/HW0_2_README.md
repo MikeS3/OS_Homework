@@ -46,4 +46,3 @@ go run HW0_2.go
 - Program shows multiple push and pop commands successfully being called and displaying the accurate top variable
 - Program creates a successful usable stack in GO
 
-READEME was written then better structured with chatgbt
