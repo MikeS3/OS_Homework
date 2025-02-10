@@ -20,11 +20,22 @@ Python thread, implementation of IPC is tested against GO's GoRoutines
   - Prints each received number.
   - Stops reading when the pipe is closed.
 
-- **Main Function:**
+- **Main Function for GOroutine:**
   - Creates a pipe (`os.Pipe()`).
   - Launches producer and consumer goroutines.
   - Waits for both to complete using `sync.WaitGroup`.
 
+- **Main Function for Python:**
+  - Creates a pipe (os.pipe()).
+  - Launches producer and consumer threads.
+  - Uses threading.Event() to signal when production is complete.
+  - Waits for both threads to finish.
+
+- **Comparison Python to Go Implementation:**
+    - Instead of goroutines, Python uses threading.Thread for concurrency.
+    - The sync.WaitGroup in Go is replaced with threading.Event() in Python.
+    - goroutines use os.Pipe() directly, while Python manages the pipe using file descriptors.
+  
 ## Getting Started
 
 ### Prerequisites
