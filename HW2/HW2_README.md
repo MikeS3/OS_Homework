@@ -1,37 +1,33 @@
-# HW2 Python Threads vs Go GoRoutines
+# HW2 Ticket Lock vs Compare and Swap Spin Lock
 
-Python thread, implementation of IPC is tested against GO's GoRoutines 
+Comparing the execution times of A ticket lock and Compare and Swap Spin Lock
 
 ## The program overview
 
-- **Producer:** Writes numbers (1 to 5) into the pipe.
-- **Consumer:** Reads numbers from the pipe and prints them until the pipe is closed.
+- **TicketLock** Structure with ticket and turn variables, and lock and unlock function
+- **CAS Spin Lock** Structure with a flag variable and lock and unlock functions
 
 ## How It Works
 
-- **Producer:**
-  - Iterates through numbers 1 to 5.
-  - Writes each number to the pipe.
-  - We have a 500ms delay between writes to see processes better in both python and Go.
-  - Closes the pipe after writing all values.
+- **TicketLock**
+  - Lock, uses the fetch and add instruction equivalent to decrement the ticket counter
+  - Spins after setting the lock
+  - Unlock imcrements the counter with the Go atomic add primitive
 
-- **Consumer:**
-  - Reads integers from the pipe.
-  - Prints each received number.
-  - Stops reading when the pipe is closed.
+- **CASSpinLock**
+  - Has a flag variable that is set to 0 or 1 to show the lock availability
+  - Uses the Compare and Swap atomic primitive to see the lock availability and grab the lock if available
+  - Unlocks by setting the flag to 0
 
-- **Main Function:**
-  - Creates a pipe (`os.Pipe()`).
-  - Launches producer and consumer goroutines.
-  - Waits for both to complete using `sync.WaitGroup`.
+- **Benchmarking**
+  - Create 32 Go routines for the ticket lock and time how long it takes to execute
+  - Create 32 Go routines after the ticket locks have run and been timed, then time how long it takes for the CAS Spin lock Go routines to execute
 
 ## Getting Started
 
 ### Prerequisites
 
 - [Go](https://golang.org/dl/) is installed so you can run program.
-- [Python](https://www.python.org/downloads/) is installed so you can run the python program
-- [bc] Basic calculator is intalled in your terminal so the bash script can calculate the time taken by each program
 
 ### Cloning the Repository
 
@@ -40,45 +36,17 @@ Clone the repository using the following commands:
 ```bash
 git clone https://github.com/MikeS3/OS_Homework.git
 cd OS_Homework
-cd HW1
+cd HW2
 ```
 ### Running the Code
 
 To run the code enter this command
-First ensure the bash script has execute permissions by running ```chmod +x benchmark.sh```
-
-next run the benchmark program which will run and time both the python threadi mplementation and the Go GoRoutine Implementation
-by running
-
-```
-./benchmark.sh
-```
+```go run HW2.go```
 
 ### Results 
-Both Programs are run and the the time it takes for them to execute is printed
+The expected output should look something like this, with times dependent on the computer running. We found the ticket lock to take longer than the
+compare and swap spin lock
 
 Expected output:
-Starting Implementation with Go routines...
-Producer: 1
-Consumer: 1
-Producer: 2
-Consumer: 2
-Producer: 3
-Consumer: 3
-Producer: 4
-Consumer: 4
-Producer: 5
-Consumer: 5
-Starting Python Threads Implementation ...
-Consumer: 1
-Producer: 1
-Producer: 2
-Consumer: 2
-Producer: 3
-Consumer: 3
-Producer: 4
-Consumer: 4
-Producer: 5
-Consumer: 5
-Goroutine Implementation: 2.696169834 seconds
-Python Thread Implementation: 2.534811611 seconds
+Ticket Lock (with 32 goroutines) took: 617.536692ms
+CAS Spin Lock (with 32 goroutines) took: 518.150893ms
