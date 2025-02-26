@@ -1,4 +1,4 @@
-# HW2 Ticket Lock vs Compare and Swap Spin Lock
+# HW3 Concurrent Linked list Queue Implementation Comparison
 
 Comparing the execution times of A ticket lock and Compare and Swap Spin Lock
 
