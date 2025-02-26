@@ -2,50 +2,67 @@ package main
 
 import "sync"
 
-// Node structure with its own lock
+// HNode represents a node in the hand-over-hand locking linked list
 type HNode struct {
 	key  int
 	next *HNode
-	lock sync.Mutex
+	lock sync.Mutex // Each node has its own lock
 }
 
-// Hand-over-Hand Linked List
+// HLinkedList represents a linked list using hand-over-hand locking
 type HLinkedList struct {
-	head     *HNode
-	listLock sync.Mutex
+	head     *HNode    // Pointer to the first node
+	listLock sync.Mutex // Lock for head modification
 }
 
-// Insert a new node at the beginning
-func (l *HLinkedList) Insert(key int) {
-	l.listLock.Lock()
+// Insert adds a new node to the beginning of the list
+// Returns true if insertion is successful, false if the key already exists
+func (l *HLinkedList) Insert(key int) bool {
+	l.listLock.Lock()      // Lock list to safely modify the head
 	defer l.listLock.Unlock()
 
+	// Check if key already exists before inserting
+	curr := l.head
+	for curr != nil {
+		curr.lock.Lock() // Lock each node while traversing
+		if curr.key == key {
+			curr.lock.Unlock()
+			return false // Key already exists
+		}
+		curr.lock.Unlock()
+		curr = curr.next
+	}
+
+	// Insert new node at the head
 	newNode := &HNode{key: key, next: l.head}
 	l.head = newNode
+	return true // Successfully inserted
 }
 
-// Lookup a key using hand-over-hand locking
+// Lookup searches for a key in the list using hand-over-hand locking
+// Returns true if the key is found, false otherwise
 func (l *HLinkedList) Lookup(key int) bool {
-	l.listLock.Lock()
+	l.listLock.Lock() // Lock the list before accessing head
 	curr := l.head
 	if curr != nil {
-		curr.lock.Lock()
+		curr.lock.Lock() // Lock the first node
 	}
 	l.listLock.Unlock()
 
+	// Traverse the list using hand-over-hand locking
 	for curr != nil {
 		if curr.key == key {
 			curr.lock.Unlock()
-			return true
+			return true // Key found
 		}
 
 		next := curr.next
 		if next != nil {
-			next.lock.Lock()
+			next.lock.Lock() // Lock the next node before unlocking the current one
 		}
-		curr.lock.Unlock()
+		curr.lock.Unlock() // Unlock the current node
 		curr = next
 	}
 
-	return false
+	return false // Key not found
 }
