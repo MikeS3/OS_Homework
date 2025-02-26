@@ -27,10 +27,9 @@ This program implements and benchmarks two types of concurrent linked lists:
   - **Lookups (`benchmark(list, false)`)** 
 - Runs benchmarks on both the hand-over-hand and global locking implementations and then prints the time for each implementation. 
 
-## Getting Started
-
 ### Prerequisites
-- Go **1.16+** installed to run the program.
+
+- [Go](https://golang.org/dl/) is installed so you can run program.
 
 ### Cloning the Repository
 Clone the repository with the following commands:
