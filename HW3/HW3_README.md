@@ -1,52 +1,58 @@
-# HW3 Concurrent Linked list Queue Implementation Comparison
+# HW3 Concurrent Linked List: Global Lock vs. Hand-Over-Hand Locking  
+Comparing the execution times of a global lock linked list and a hand-over-hand locking linked list 
 
-Comparing the execution times of A ticket lock and Compare and Swap Spin Lock
+## **Program Overview**  
+This program implements and benchmarks two types of concurrent linked lists: 
+1. **Global Lock Linked List** – Uses a single mutex to protect the entire list. 
+2. **Hand-Over-Hand Locking Linked List** – Uses one mutex per node, allowing finer-grained locking. 
 
-## The program overview
+## **How It Works**  
 
-- **TicketLock** Structure with ticket and turn variables, and lock and unlock function
-- **CAS Spin Lock** Structure with a flag variable and lock and unlock functions
+### **Global Lock Linked List (global_lock_list.go)**  
+- A **single global mutex** (sync.Mutex) protects the entire list. 
+- **Insert Operation:** Locks the entire list, checks if the key exists, then inserts if the key isnt found. 
+- **Lookup Operation:** Locks the entire list, searches for the key, then unlocks. 
+- **Tradeoff:** Simple, but can cause high contention when multiple threads are trying to access the list. 
 
-## How It Works
+### **Hand-Over-Hand Locking Linked List (hand_over_hand_list.go)**  
+- Each node has its own lock, which allows multiple threads to traverse different parts of the list at the same time 
+- **Insert Operation:** Locks nodes one by one while also searching for duplicate nodes, then inserts at the head. 
+- **Lookup Operation:** Uses hand-over-hand locking which locks the next node before unlocking the current node. 
+- **Tradeoff:** Allows more concurrent access, but it has higher locking overhead. 
 
-- **TicketLock**
-  - Lock, uses the fetch and add instruction equivalent to decrement the ticket counter
-  - Spins after setting the lock
-  - Unlock imcrements the counter with the Go atomic add primitive
-
-- **CASSpinLock**
-  - Has a flag variable that is set to 0 or 1 to show the lock availability
-  - Uses the Compare and Swap atomic primitive to see the lock availability and grab the lock if available
-  - Unlocks by setting the flag to 0
-
-- **Benchmarking**
-  - Create 32 Go routines for the ticket lock and time how long it takes to execute
-  - Create 32 Go routines after the ticket locks have run and been timed, then time how long it takes for the CAS Spin lock Go routines to execute
+## **Benchmarking (main.go)**  
+- Spawns **10 concurrent threads**, each performing **1,000 insert or lookup operations**. 
+- **Measures execution time** for: 
+  - **Inserts (`benchmark(list, true)`)** 
+  - **Lookups (`benchmark(list, false)`)** 
+- Runs benchmarks on both the hand-over-hand and global locking implementations and then prints the time for each implementation. 
 
 ## Getting Started
 
 ### Prerequisites
-
-- [Go](https://golang.org/dl/) is installed so you can run program.
+- Go **1.16+** installed to run the program.
 
 ### Cloning the Repository
-
-Clone the repository using the following commands:
+Clone the repository with the following commands:
 
 ```bash
 git clone https://github.com/MikeS3/OS_Homework.git
 cd OS_Homework
-cd HW2
+cd HW3
 ```
+
 ### Running the Code
+To run the code type this command in the terminal in the directory with the files for this project
+```bash
+go run main.go global_lock_list.go hand_over_hand_list.go
+```
 
-To run the code enter this command
-```go run HW2.go```
+## Results
+The expected output will show the execution times for insert and lookup operations on both implementations of the queue:
 
-### Results 
-The expected output should look something like this, with times dependent on the computer running. We found the ticket lock to take longer than the
-compare and swap spin lock
-
-Expected output:
-Ticket Lock (with 32 goroutines) took: 617.536692ms
-CAS Spin Lock (with 32 goroutines) took: 518.150893ms
+Benchmarking Global Lock List
+Time elapsed: 7.555701ms | Successful operations: 1000
+Time elapsed: 6.9879ms | Successful operations: 10000
+Benchmarking Hand-over-Hand Lock List
+Time elapsed: 66.5193ms | Successful operations: 1000
+Time elapsed: 60.303701ms | Successful operations: 10000
