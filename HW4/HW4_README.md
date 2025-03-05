@@ -56,10 +56,10 @@ go test -benchmem -run=^$ -bench ^BenchmarkQueue_Enqueue$ homework4/MichealScott
 ```
 
 ### Example Output:
-goos: windows
-goarch: amd64
-pkg: homework4/LockFree
-cpu: AMD Ryzen 7 4700U with Radeon Graphics
-BenchmarkQueue_Enqueue-8         8480498               122.5 ns/op            31 B/op          1 allocs/op
-PASS
-ok      homework4/LockFree      2.463s
+goos: windows  
+goarch: amd64  
+pkg: homework4/LockFree  
+cpu: AMD Ryzen 7 4700U with Radeon Graphics  
+BenchmarkQueue_Enqueue-8         8480498               122.5 ns/op            31 B/op          1 allocs/op  
+PASS  
+ok      homework4/LockFree      2.463s  
