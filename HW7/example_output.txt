@@ -1,0 +1,20 @@
+RAID Simulation Benchmark
+Block Size: 4096 bytes
+Number of Disks: 5
+Data Size: 100 MB
+Number of Blocks: 25600
+
+RAID     Write Time      Write Speed     Read Time       Read Speed      Effective Cap   Overhead
+RAID0    140.44 seconds  0.71            0.08 seconds    1193.27         195             0.00
+RAID1    747.39 seconds  0.13            0.08 seconds    1220.81         39              80.00
+RAID4    264.37 seconds  0.38            0.06 seconds    1591.71         156             20.00
+RAID5    254.39 seconds  0.39            0.06 seconds    1696.46         156             20.00
+
+Analysis:
+- RAID0: Provides the highest performance but no redundancy.
+- RAID1: Provides redundancy but at the cost of capacity (1/N of total capacity).
+- RAID4: Better capacity utilization than RAID1 but parity disk becomes a bottleneck for writes.
+- RAID5: Distributes parity to avoid the bottleneck in RAID4 while maintaining redundancy.
+
+If the performance trends match textbook expectations, RAID0 should be fastest for both reads and writes,
+while RAID5 should offer better write performance than RAID4 due to distributed parity.
