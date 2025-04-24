@@ -145,34 +145,6 @@ RAID5  [███████████] 20.00
    - We use `fsync()` to simulate disk latency, which is more costly than real hardware would be
    - This explains the generally low write speeds across all RAID levels
 
-3. **Sequential vs. Random Access**:
-   - Our benchmarks focus on sequential access
-   - Real-world workloads often include random access patterns
-   - According to the textbook, RAID-5 has an advantage in random reads over RAID-4
-
-4. **Implementation Specifics**:
-   - Our RAID-1 mirrors to all disks rather than using disk pairs
-   - Our parity calculation reads all blocks rather than using more efficient algorithms
-
-## Real-World Implications
-
-When selecting a RAID level for production use, consider:
-
-1. **Application Read/Write Patterns**:
-   - Read-intensive workloads: RAID-5 provides excellent performance with redundancy
-   - Write-intensive workloads: RAID-0 provides best performance, but with no redundancy
-
-2. **Data Importance**:
-   - Critical data: RAID-1 or RAID-5 for redundancy
-   - Temporary/Reproducible data: RAID-0 for maximum performance
-
-3. **Budget Constraints**:
-   - High budget: RAID-1 provides simplest redundancy but at high cost
-   - Limited budget: RAID-5 provides good balance of redundancy and capacity
-
-4. **Performance Requirements**:
-   - Maximum read speed: RAID-5 showed best results in our tests
-   - Maximum write speed: RAID-0 is significantly faster
 
 ## Conclusion
 
