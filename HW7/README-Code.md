@@ -31,7 +31,7 @@ cd HW7
 ### Running the Benchmark:
 To run the RAID simulation and benchmarks, execute the following command:
 ```bash
-go run main.go
+go run go_run_visualization.go
 ```
 ## Project Structure
 
@@ -139,7 +139,7 @@ const (
 Use the following command to run all tests:
 
 ```bash
-go test -v
+go run go_run_visualization.go
 ```
 
 ## Implementation Notes
